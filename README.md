@@ -4,10 +4,10 @@
 
 | 文件 | 场景 | 关键 API |
 | --- | --- | --- |
-| `demo_01_conversation_memory.py` | 同一会话的多轮记忆 | `InMemorySaver`、`thread_id`、`get_state` |
-| `demo_02_human_in_the_loop.py` | 人工审批后恢复执行 | `interrupt`、`Command(resume=...)` |
-| `demo_03_time_travel.py` | 查看历史并从旧状态创建分支 | `get_state_history`、`update_state` |
-| `demo_04_fault_recovery.py` | 节点失败后从 checkpoint 续跑 | `get_state`、`invoke(None, config)` |
+| `checkpoint/demo_01_conversation_memory.py` | 同一会话的多轮记忆 | `InMemorySaver`、`thread_id`、`get_state` |
+| `checkpoint/demo_02_human_in_the_loop.py` | 人工审批后恢复执行 | `interrupt`、`Command(resume=...)` |
+| `checkpoint/demo_03_time_travel.py` | 查看历史并从旧状态创建分支 | `get_state_history`、`update_state` |
+| `checkpoint/demo_04_fault_recovery.py` | 节点失败后从 checkpoint 续跑 | `get_state`、`invoke(None, config)` |
 
 四个脚本都不调用大模型，不需要 API Key。业务节点是确定性的，便于专注观察 checkpoint 的行为。
 
@@ -24,15 +24,15 @@ python -m pip install -r requirements.txt
 ## 运行
 
 ```bash
-python demo_01_conversation_memory.py
-python demo_02_human_in_the_loop.py
-python demo_03_time_travel.py
-python demo_04_fault_recovery.py
+python checkpoint/demo_01_conversation_memory.py
+python checkpoint/demo_02_human_in_the_loop.py
+python checkpoint/demo_03_time_travel.py
+python checkpoint/demo_04_fault_recovery.py
 ```
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
-运行 `demo_02_human_in_the_loop.py` 时，图会在人工审批节点暂停，并在控制台等待输入：
+运行 `checkpoint/demo_02_human_in_the_loop.py` 时，图会在人工审批节点暂停，并在控制台等待输入：
 
 ```text
 请输入审批结果（approve/reject）：
@@ -40,14 +40,20 @@ python demo_04_fault_recovery.py
 
 输入 `approve` 会进入付款节点，输入 `reject` 会进入取消节点；其他输入会要求重新输入。
 
-每个 demo 运行完成后还会把流程结构图保存到项目根目录的 `graph_images/`：
+每个 demo 运行完成后还会把流程结构图保存到 `checkpoint/graph_images/`：
 
 ```text
-graph_images/
-├── demo_01_conversation_memory.png
-├── demo_02_human_in_the_loop.png
-├── demo_03_time_travel.png
-└── demo_04_fault_recovery.png
+checkpoint/
+├── demo_01_conversation_memory.py
+├── demo_02_human_in_the_loop.py
+├── demo_03_time_travel.py
+├── demo_04_fault_recovery.py
+├── diagram_utils.py
+└── graph_images/
+    ├── demo_01_conversation_memory.png
+    ├── demo_02_human_in_the_loop.png
+    ├── demo_03_time_travel.png
+    └── demo_04_fault_recovery.png
 ```
 
 PNG 使用 Mermaid 在线渲染，因此生成图片时需要网络。若渲染失败，脚本仍会正常结束，在同一目录保留 `.mmd` Mermaid 源文件，并提示检查网络；网络恢复后重新运行即可生成 PNG。
