@@ -32,6 +32,14 @@ python demo_04_fault_recovery.py
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
+运行 `demo_02_human_in_the_loop.py` 时，图会在人工审批节点暂停，并在控制台等待输入：
+
+```text
+请输入审批结果（approve/reject）：
+```
+
+输入 `approve` 会进入付款节点，输入 `reject` 会进入取消节点；其他输入会要求重新输入。
+
 每个 demo 运行完成后还会把流程结构图保存到项目根目录的 `graph_images/`：
 
 ```text
@@ -66,10 +74,11 @@ config = {"configurable": {"thread_id": "example-001"}}
 
 ### 4. interrupt 的恢复方式
 
-`interrupt(...)` 会暂停图并把信息返回给调用方。人工完成审批后，使用下面的命令恢复同一条线程：
+`interrupt(...)` 会暂停图并把信息返回给调用方。人工在控制台输入结果后，使用输入值恢复同一条线程：
 
 ```python
-graph.invoke(Command(resume="approve"), config=config)
+decision = input("请输入审批结果（approve/reject）：").strip().lower()
+graph.invoke(Command(resume=decision), config=config)
 ```
 
 恢复时必须使用原来的 `thread_id`。

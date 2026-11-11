@@ -42,6 +42,14 @@ def cancel(state: ApprovalState) -> dict[str, str]:
     return {"result": f"已拒绝付款：{state['request']}"}
 
 
+def read_decision() -> Literal["approve", "reject"]:
+    while True:
+        decision = input("请输入审批结果（approve/reject）：").strip().lower()
+        if decision in {"approve", "reject"}:
+            return decision
+        print("输入无效，请输入 approve 或 reject。")
+
+
 def build_graph():
     builder = StateGraph(ApprovalState)
     builder.add_node("review", ask_for_approval)
@@ -65,11 +73,13 @@ def main() -> None:
     interrupt_info = paused["__interrupt__"][0]
     print("图已暂停，等待人工输入：", interrupt_info.value)
 
-    resumed = graph.invoke(Command(resume="approve"), config=config)
+    decision = read_decision()
+    resumed = graph.invoke(Command(resume=decision), config=config)
     print("恢复后的结果：", resumed["result"])
 
-    assert resumed["decision"] == "approve"
-    assert resumed["result"].startswith("已支付")
+    assert resumed["decision"] == decision
+    expected_prefix = "已支付" if decision == "approve" else "已拒绝付款"
+    assert resumed["result"].startswith(expected_prefix)
     save_graph_image(graph, "demo_02_human_in_the_loop.png")
 
 
