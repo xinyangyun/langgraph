@@ -1,13 +1,19 @@
-# LangGraph Checkpointer 四场景 Demo
+# LangGraph Checkpointer、Store 与 Fault Tolerance Demo
+
+项目示例按主题放在两个目录中：
+
+- `01-checkpoint/`：图状态持久化、人工介入、时间旅行和故障恢复。
+- `02-store/`：长期记忆、跨 thread 数据共享和语义检索。
+- `03-fault-tolerance/`：节点重试、超时、错误补偿和幂等副作用。
 
 这组示例对应 LangGraph checkpointer 的四个核心使用场景：
 
 | 文件 | 场景 | 关键 API |
 | --- | --- | --- |
-| `checkpoint/demo_01_conversation_memory.py` | 同一会话的多轮记忆 | `InMemorySaver`、`thread_id`、`get_state` |
-| `checkpoint/demo_02_human_in_the_loop.py` | 人工审批后恢复执行 | `interrupt`、`Command(resume=...)` |
-| `checkpoint/demo_03_time_travel.py` | 查看历史并从旧状态创建分支 | `get_state_history`、`update_state` |
-| `checkpoint/demo_04_fault_recovery.py` | 节点失败后从 checkpoint 续跑 | `get_state`、`invoke(None, config)` |
+| `01-checkpoint/demo_01_conversation_memory.py` | 同一会话的多轮记忆 | `InMemorySaver`、`thread_id`、`get_state` |
+| `01-checkpoint/demo_02_human_in_the_loop.py` | 人工审批后恢复执行 | `interrupt`、`Command(resume=...)` |
+| `01-checkpoint/demo_03_time_travel.py` | 查看历史并从旧状态创建分支 | `get_state_history`、`update_state` |
+| `01-checkpoint/demo_04_fault_recovery.py` | 节点失败后从 checkpoint 续跑 | `get_state`、`invoke(None, config)` |
 
 四个脚本都不调用大模型，不需要 API Key。业务节点是确定性的，便于专注观察 checkpoint 的行为。
 
@@ -24,15 +30,36 @@ python -m pip install -r requirements.txt
 ## 运行
 
 ```bash
-python checkpoint/demo_01_conversation_memory.py
-python checkpoint/demo_02_human_in_the_loop.py
-python checkpoint/demo_03_time_travel.py
-python checkpoint/demo_04_fault_recovery.py
+python 01-checkpoint/demo_01_conversation_memory.py
+python 01-checkpoint/demo_02_human_in_the_loop.py
+python 01-checkpoint/demo_03_time_travel.py
+python 01-checkpoint/demo_04_fault_recovery.py
 ```
+
+Store 示例：
+
+```bash
+python 02-store/demo_01_basic_store.py
+python 02-store/demo_02_cross_thread_memory.py
+python 02-store/demo_03_semantic_search.py
+```
+
+Store 的详细说明见 `02-store/README.md`。
+
+Fault Tolerance 示例（需要 `langgraph>=1.2`）：
+
+```bash
+python 03-fault-tolerance/demo_01_retry_policy.py
+python 03-fault-tolerance/demo_02_node_timeout.py
+python 03-fault-tolerance/demo_03_error_handler.py
+python 03-fault-tolerance/demo_04_idempotent_side_effect.py
+```
+
+详细说明见 `03-fault-tolerance/README.md`。
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
-运行 `checkpoint/demo_02_human_in_the_loop.py` 时，图会在人工审批节点暂停，并在控制台等待输入：
+运行 `01-checkpoint/demo_02_human_in_the_loop.py` 时，图会在人工审批节点暂停，并在控制台等待输入：
 
 ```text
 请输入审批结果（approve/reject）：
@@ -40,10 +67,10 @@ python checkpoint/demo_04_fault_recovery.py
 
 输入 `approve` 会进入付款节点，输入 `reject` 会进入取消节点；其他输入会要求重新输入。
 
-每个 demo 运行完成后还会把流程结构图保存到 `checkpoint/graph_images/`：
+每个 demo 运行完成后还会把流程结构图保存到 `01-checkpoint/graph_images/`：
 
 ```text
-checkpoint/
+01-checkpoint/
 ├── demo_01_conversation_memory.py
 ├── demo_02_human_in_the_loop.py
 ├── demo_03_time_travel.py
