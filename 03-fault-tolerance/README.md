@@ -44,6 +44,21 @@ python 03-fault-tolerance/demo_04_idempotent_side_effect.py
   -> error_handler 执行补偿或路由
 ```
 
+`demo_03_error_handler.py` 的具体路径是：
+
+```text
+START
+  -> charge_payment 第 1 次失败
+  -> charge_payment 第 2 次失败
+  -> charge_payment 第 3 次失败
+  -> payment_error_handler
+  -> Command(update=..., goto="finalize")
+  -> finalize
+  -> END
+```
+
+`error_handler=payment_error_handler` 将错误处理函数绑定到 `charge_payment`。它不需要通过 `add_edge()` 手动连接；只有节点异常且 `RetryPolicy` 的重试次数全部耗尽后，LangGraph 才会将包含失败节点和原始异常的 `NodeError` 传给该处理函数。
+
 节点重试会从函数开头重新执行，因此支付、发邮件、外部数据库写入等副作用必须具有幂等性。第四个示例从已经存在的 `order_id` 派生稳定幂等键，使第一次扣款成功但响应丢失时，第二次调用不会重复扣款。
 
 ## 官方文档

@@ -13,16 +13,25 @@ class PaymentState(TypedDict, total=False):
     error_message: str
 
 
-def charge_payment(state: PaymentState) -> dict[str, str]:
-    print(f"订单 {state['order_id']}：调用支付网关")
-    raise ConnectionError("支付网关暂时不可用")
+def make_charge_payment():
+    attempts = 0
+
+    def charge_payment(state: PaymentState) -> dict[str, str]:
+        nonlocal attempts
+        attempts += 1
+        print(f"charge_payment 第 {attempts} 次执行：订单 {state['order_id']}")
+        raise ConnectionError("支付网关暂时不可用")
+
+    return charge_payment
 
 
 def payment_error_handler(
     state: PaymentState,
     error: NodeError,
 ) -> Command:
-    print(f"节点 {error.node} 重试耗尽：{error.error}")
+    print(f"进入 payment_error_handler：节点 {error.node} 重试耗尽")
+    print(f"失败原因：{error.error}")
+    print("补偿完成后通过 Command(goto='finalize') 进入 finalize")
     return Command(
         update={
             "status": "compensated",
@@ -33,6 +42,7 @@ def payment_error_handler(
 
 
 def finalize(state: PaymentState) -> dict[str, str]:
+    print("进入 finalize 节点")
     return {"status": f"{state['status']}: order {state['order_id']} finalized"}
 
 
@@ -40,7 +50,7 @@ def build_graph():
     builder = StateGraph(PaymentState)
     builder.add_node(
         "charge_payment",
-        charge_payment,
+        make_charge_payment(),
         retry_policy=RetryPolicy(
             max_attempts=3,
             initial_interval=0.01,
@@ -48,6 +58,7 @@ def build_graph():
             jitter=False,
             retry_on=ConnectionError,
         ),
+        # RetryPolicy 耗尽后，LangGraph 才会调用这个错误处理节点。
         error_handler=payment_error_handler,
     )
     builder.add_node("finalize", finalize)

@@ -23,7 +23,7 @@ def build_graph():
     builder.add_node(
         "slow_api",
         slow_api,
-        timeout=TimeoutPolicy(run_timeout=0.05),
+        timeout=TimeoutPolicy(run_timeout=0.1),
     )
     builder.add_edge(START, "slow_api")
     builder.add_edge("slow_api", END)
