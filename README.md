@@ -1,10 +1,11 @@
-# LangGraph Checkpointer、Store 与 Fault Tolerance Demo
+# LangGraph Checkpointer、Store、Fault Tolerance 与 Interrupts Demo
 
-项目示例按主题放在两个目录中：
+项目示例按主题放在四个目录中：
 
 - `01-checkpoint/`：图状态持久化、人工介入、时间旅行和故障恢复。
 - `02-store/`：长期记忆、跨 thread 数据共享和语义检索。
 - `03-fault-tolerance/`：节点重试、超时、错误补偿和幂等副作用。
+- `04-interrupts/`：动态暂停、恢复值校验、输入校验循环和并行 interrupt。
 
 这组示例对应 LangGraph checkpointer 的四个核心使用场景：
 
@@ -56,6 +57,17 @@ python 03-fault-tolerance/demo_04_idempotent_side_effect.py
 ```
 
 详细说明见 `03-fault-tolerance/README.md`。
+
+Interrupts 示例（需要 `langgraph>=1.2`）：
+
+```bash
+python 04-interrupts/demo_01_approval_console.py
+python 04-interrupts/demo_02_typed_response.py
+python 04-interrupts/demo_03_validation_loop.py
+python 04-interrupts/demo_04_parallel_interrupts.py
+```
+
+详细说明见 `04-interrupts/README.md`。
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
