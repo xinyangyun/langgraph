@@ -8,6 +8,7 @@
 - `04-interrupts/`：动态暂停、恢复值校验、输入校验循环和并行 interrupt。
 - `05-time-travel/`：历史 checkpoint 重放、状态分叉和 interrupt 分支。
 - `06-memory/`：短期记忆、长期记忆和消息历史管理。
+- `07-subgraphs/`：子图状态接口、共享状态及子图持久化。
 
 这组示例对应 LangGraph checkpointer 的四个核心使用场景：
 
@@ -90,6 +91,16 @@ python 06-memory/demo_03_manage_message_history.py
 ```
 
 详细说明见 `06-memory/README.md`。
+
+Subgraphs 示例：
+
+```bash
+python 07-subgraphs/demo_01_different_schemas.py
+python 07-subgraphs/demo_02_shared_state.py
+python 07-subgraphs/demo_03_subgraph_persistence.py
+```
+
+详细说明见 `07-subgraphs/README.md`。
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
