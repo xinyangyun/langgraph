@@ -7,6 +7,7 @@
 - `03-fault-tolerance/`：节点重试、超时、错误补偿和幂等副作用。
 - `04-interrupts/`：动态暂停、恢复值校验、输入校验循环和并行 interrupt。
 - `05-time-travel/`：历史 checkpoint 重放、状态分叉和 interrupt 分支。
+- `06-memory/`：短期记忆、长期记忆和消息历史管理。
 
 这组示例对应 LangGraph checkpointer 的四个核心使用场景：
 
@@ -79,6 +80,16 @@ python 05-time-travel/demo_03_replay_interrupt.py
 ```
 
 详细说明见 `05-time-travel/README.md`。
+
+Memory 示例：
+
+```bash
+python 06-memory/demo_01_short_term_memory.py
+python 06-memory/demo_02_long_term_memory.py
+python 06-memory/demo_03_manage_message_history.py
+```
+
+详细说明见 `06-memory/README.md`。
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
