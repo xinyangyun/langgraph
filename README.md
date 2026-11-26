@@ -9,6 +9,7 @@
 - `05-time-travel/`：历史 checkpoint 重放、状态分叉和 interrupt 分支。
 - `06-memory/`：短期记忆、长期记忆和消息历史管理。
 - `07-subgraphs/`：子图状态接口、共享状态及子图持久化。
+- `08-langsmith/`：将 LangGraph 图和节点运行轨迹上传到 LangSmith。
 
 这组示例对应 LangGraph checkpointer 的四个核心使用场景：
 
@@ -101,6 +102,14 @@ python 07-subgraphs/demo_03_subgraph_persistence.py
 ```
 
 详细说明见 `07-subgraphs/README.md`。
+
+LangSmith 示例（需要先配置 `LANGSMITH_API_KEY`）：
+
+```bash
+python 08-langsmith/demo_01_tracing.py
+```
+
+详细说明见 `08-langsmith/README.md`。
 
 每个脚本末尾都有断言。脚本无异常退出即表示对应流程运行成功。
 
